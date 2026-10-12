@@ -1,230 +1,318 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="cyber">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neo Tic-Tac-Toe | Cyberpunk Glow Strategy Game</title>
-    <meta name="description" content="Play Neo Tic-Tac-Toe: a stunning cyberpunk glow game with unbeatable Minimax AI, 3x3, 4x4, and 5x5 boards, match replays, sound effects, and themes.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CYBER SNAKE 2077 - Futuristic Neon Arcade Web Game</title>
+    <meta name="description" content="Experience Cyber Snake 2077: a high-octane cyberpunk arcade snake game with synthesized Web Audio sound effects, combo streaks, dynamic power-ups, multiple game modes, and particle explosions.">
+    <meta name="keywords" content="snake game, cyberpunk snake, arcade web game, canvas snake, html5 game, zero dependencies, neon aesthetic">
+    <meta name="author" content="CMukesh98">
+    <meta name="theme-color" content="#090a10">
+
+    <!-- Google Fonts: Outfit & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Master CSS -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Background Visuals -->
-    <div class="ambient-glow-1"></div>
-    <div class="ambient-glow-2"></div>
-    <div class="grid-mesh-bg"></div>
 
-    <!-- Celebration Canvas -->
-    <canvas id="confetti-canvas"></canvas>
-
-    <div class="app-container">
-        <!-- Header -->
-        <header class="game-header">
-            <div class="brand-wrapper">
-                <div class="brand-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                        <line x1="4" y1="4" x2="20" y2="20"/>
-                        <line x1="20" y1="4" x2="4" y2="20"/>
+    <main class="app-container">
+        <!-- Top Navigation / Brand Header -->
+        <header class="header-bar">
+            <div class="brand">
+                <div class="brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
                     </svg>
                 </div>
-                <h1 class="brand-title">NEO TIC-TAC-TOE</h1>
+                <div class="brand-text">
+                    <h1>CYBER SNAKE 2077</h1>
+                    <span class="version-tag">NEO-ARCADE // v2.0 // ZERO-LAG ENGINE</span>
+                </div>
             </div>
 
-            <div class="header-actions">
-                <button id="btn-sound" class="btn-icon" title="Toggle Sound (M)" aria-label="Toggle Sound">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <div class="header-controls">
+                <!-- Theme Select -->
+                <div class="theme-dropdown">
+                    <select id="theme-select" class="theme-select" aria-label="Select Color Theme">
+                        <option value="cyber">Cyber Neon</option>
+                        <option value="matrix">Matrix Emerald</option>
+                        <option value="synthwave">Synthwave Sunset</option>
+                        <option value="gold">Tokyo Gold</option>
+                    </select>
+                    <svg class="theme-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+
+                <!-- Mute Toggle Button -->
+                <button id="mute-btn" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound (M)">
+                    <svg viewBox="0 0 24 24">
                         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                    </svg>
-                </button>
-                <button id="btn-theme" class="btn-icon" title="Themes" aria-label="Themes">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="5"/>
-                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-                    </svg>
-                </button>
-                <button id="btn-reset-stats" class="btn-icon" title="Reset Scores" aria-label="Reset Scores">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
                     </svg>
                 </button>
             </div>
         </header>
 
-        <!-- Segmented Controls -->
-        <div class="config-bar">
-            <!-- Mode Switcher -->
-            <div class="segmented-control" id="mode-control" role="group" aria-label="Game Mode">
-                <button class="segmented-btn active" data-mode="ai" id="mode-ai">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="11" width="18" height="10" rx="2"/>
-                        <circle cx="12" cy="5" r="2"/>
-                        <path d="M12 7v4"/>
-                        <line x1="8" y1="16" x2="8" y2="16"/>
-                        <line x1="16" y1="16" x2="16" y2="16"/>
-                    </svg>
-                    vs Bot
-                </button>
-                <button class="segmented-btn" data-mode="pvp" id="mode-pvp">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                        <circle cx="9" cy="7" r="4"/>
-                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
-                        <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                    </svg>
-                    2 Players
-                </button>
-            </div>
-
-            <!-- Difficulty Switcher (Visible in AI mode) -->
-            <div class="segmented-control" id="diff-control" role="group" aria-label="Difficulty">
-                <button class="segmented-btn" data-diff="easy" id="diff-easy">Casual</button>
-                <button class="segmented-btn" data-diff="medium" id="diff-medium">Tactical</button>
-                <button class="segmented-btn active" data-diff="impossible" id="diff-god">Unbeatable</button>
-            </div>
-
-            <!-- Grid Size Switcher -->
-            <div class="segmented-control" id="size-control" role="group" aria-label="Grid Size">
-                <button class="segmented-btn active" data-size="3" id="size-3">3x3</button>
-                <button class="segmented-btn" data-size="4" id="size-4">4x4</button>
-                <button class="segmented-btn" data-size="5" id="size-5">5x5</button>
-            </div>
-        </div>
-
-        <!-- Scoreboard -->
-        <section class="scoreboard" aria-label="Scoreboard">
-            <div class="player-card player-x">
-                <div class="player-avatar" id="avatar-x">X</div>
-                <div class="player-info">
-                    <span class="player-name" id="player-x-name">Player X</span>
-                    <span class="player-score" id="score-x">0</span>
+        <!-- Configuration Bar (Modes & Difficulty) -->
+        <section class="config-bar" aria-label="Game Configuration">
+            <div class="config-group">
+                <span>Mode:</span>
+                <div class="pill-selector" role="radiogroup" aria-label="Game Mode">
+                    <button class="pill-btn mode-pill active" data-mode="classic" id="mode-classic">Classic</button>
+                    <button class="pill-btn mode-pill" data-mode="portal" id="mode-portal">Wrap Portal</button>
+                    <button class="pill-btn mode-pill" data-mode="blitz" id="mode-blitz">Speed Blitz</button>
+                    <button class="pill-btn mode-pill" data-mode="obstacles" id="mode-obstacles">Labyrinth</button>
                 </div>
             </div>
 
-            <div class="vs-divider">
-                <span class="vs-badge">VS</span>
-                <span class="ties-count" id="score-ties">0 Ties</span>
-            </div>
-
-            <div class="player-card player-o">
-                <div class="player-avatar" id="avatar-o">O</div>
-                <div class="player-info">
-                    <span class="player-name" id="player-o-name">CyberBot</span>
-                    <span class="player-score" id="score-o">0</span>
+            <div class="config-group">
+                <span>Speed:</span>
+                <div class="pill-selector" role="radiogroup" aria-label="Game Difficulty">
+                    <button class="pill-btn diff-pill" data-diff="relaxed" id="diff-relaxed">Relaxed</button>
+                    <button class="pill-btn diff-pill active" data-diff="normal" id="diff-normal">Normal</button>
+                    <button class="pill-btn diff-pill" data-diff="hyper" id="diff-hyper">Hyper</button>
+                    <button class="pill-btn diff-pill" data-diff="godspeed" id="diff-godspeed">Godspeed</button>
                 </div>
             </div>
         </section>
 
-        <!-- Status & Turn Indicator Banner -->
-        <section class="status-banner" aria-live="polite">
-            <div class="status-left">
-                <div class="turn-pulse-dot" id="turn-pulse-dot"></div>
-                <span class="status-text" id="status-text">Your Turn (X)</span>
-            </div>
-            <div class="streak-tag" id="streak-tag" title="Win Streak">
-                <svg viewBox="0 0 24 24">
-                    <path d="M12 2c-.5 2-2 3.5-3.5 5.5C7 9.5 6 12 6 14.5 6 18.5 9 22 13 22s7-3.5 7-7.5c0-4-3-7-4-9-1 2-2 3-3 3-.5-2-1-4-1-6.5z"/>
-                </svg>
-                <span id="streak-count">0 🔥</span>
-            </div>
-        </section>
-
-        <!-- Game Board Arena -->
-        <main class="board-wrapper">
-            <svg id="strike-canvas" aria-hidden="true"></svg>
-            <div class="board-grid size-3 turn-x" id="board-grid" role="grid" aria-label="Tic Tac Toe Board">
-                <!-- Dynamically rendered cells -->
-            </div>
-        </main>
-
-        <!-- Action Controls -->
-        <div class="action-controls">
-            <button class="btn-primary" id="btn-restart" title="New Game (R)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <polyline points="23 4 23 10 17 10"/>
-                    <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-                </svg>
-                New Game
-            </button>
-
-            <button class="btn-secondary" id="btn-undo" title="Undo Move (U)" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 7v6h6"/>
-                    <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
-                </svg>
-                Undo
-            </button>
-
-            <button class="btn-secondary" id="btn-replay" title="Replay Match" disabled>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polygon points="5 3 19 12 5 21 5 3"/>
-                </svg>
-                Replay
-            </button>
-        </div>
-
-        <!-- Shortcuts Pill / Helper Text -->
-        <div style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.25rem;">
-            Tip: Use Keyboard NumPad <strong>1–9</strong> to play &bull; <strong>R</strong> for New Game &bull; <strong>U</strong> for Undo
-        </div>
-    </div>
-
-    <!-- Theme Customization Modal -->
-    <div class="modal-overlay" id="theme-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <div class="modal-card">
-            <div class="modal-header">
-                <h2 class="modal-title" id="modal-title">Customize Theme</h2>
-                <button class="modal-close" id="modal-close" aria-label="Close Modal">
-                    <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
-                        <line x1="18" y1="6" x2="6" y2="18"/>
-                        <line x1="6" y1="6" x2="18" y2="18"/>
-                    </svg>
-                </button>
-            </div>
-
-            <div class="modal-section">
-                <span class="modal-label">Choose Visual Style</span>
-                <div class="theme-palette-grid">
-                    <div class="theme-option active" data-theme-choice="cyber-neon">
-                        <div class="color-dots">
-                            <span class="color-dot" style="background: #00f2fe;"></span>
-                            <span class="color-dot" style="background: #ff007f;"></span>
-                        </div>
-                        <span class="theme-name">Cyber Neon</span>
+        <!-- Main Game Layout Grid -->
+        <div class="game-layout">
+            <!-- Arena Column -->
+            <div class="arena-column">
+                <!-- Heads-Up Display (HUD) Cards -->
+                <div class="hud-bar">
+                    <div class="hud-card score-card">
+                        <span class="hud-label">Score</span>
+                        <span id="hud-score" class="hud-value">0</span>
                     </div>
 
-                    <div class="theme-option" data-theme-choice="emerald-matrix">
-                        <div class="color-dots">
-                            <span class="color-dot" style="background: #10b981;"></span>
-                            <span class="color-dot" style="background: #f59e0b;"></span>
-                        </div>
-                        <span class="theme-name">Emerald Matrix</span>
+                    <div class="hud-card high-card">
+                        <span class="hud-label">Best Record</span>
+                        <span id="hud-highscore" class="hud-value">0</span>
                     </div>
 
-                    <div class="theme-option" data-theme-choice="sunset-synth">
-                        <div class="color-dots">
-                            <span class="color-dot" style="background: #a855f7;"></span>
-                            <span class="color-dot" style="background: #ff5e62;"></span>
+                    <div class="hud-card combo-card">
+                        <span class="hud-label">Combo Multiplier</span>
+                        <span id="hud-combo" class="hud-value">x1.0</span>
+                        <div class="combo-meter-track">
+                            <div id="combo-meter-fill" class="combo-meter-fill"></div>
                         </div>
-                        <span class="theme-name">Sunset Synth</span>
                     </div>
 
-                    <div class="theme-option" data-theme-choice="obsidian-luxury">
-                        <div class="color-dots">
-                            <span class="color-dot" style="background: #38bdf8;"></span>
-                            <span class="color-dot" style="background: #f5d070;"></span>
+                    <div class="hud-card length-card">
+                        <span class="hud-label">Snake Length</span>
+                        <span id="hud-length" class="hud-value">3</span>
+                    </div>
+                </div>
+
+                <!-- Active Buffs Bar -->
+                <div id="active-buffs-bar" class="active-buffs-bar"></div>
+
+                <!-- Canvas Wrapper -->
+                <div class="canvas-wrapper">
+                    <canvas id="game-canvas"></canvas>
+
+                    <!-- Start Overlay -->
+                    <div id="start-overlay" class="overlay-screen active">
+                        <h2 class="overlay-title">CYBER SNAKE</h2>
+                        <p class="overlay-desc">Control the cybernetic viper. Hunt energy cores, chain combos, and unleash quantum power-ups without crashing!</p>
+                        <button id="start-btn" class="cta-btn">
+                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            INITIALIZE SYSTEM
+                        </button>
+                    </div>
+
+                    <!-- Pause Overlay -->
+                    <div id="pause-overlay" class="overlay-screen">
+                        <h2 class="overlay-title">SYSTEM PAUSED</h2>
+                        <p class="overlay-desc">Press [SPACE] or tap Resume below to continue.</p>
+                        <button id="resume-btn" class="cta-btn">
+                            <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            RESUME GAME
+                        </button>
+                    </div>
+
+                    <!-- Game Over Overlay -->
+                    <div id="gameover-overlay" class="overlay-screen">
+                        <div id="new-record-badge" class="new-record-pill" style="display: none;">
+                            🏆 NEW ALL-TIME RECORD!
                         </div>
-                        <span class="theme-name">Obsidian Gold</span>
+                        <h2 class="overlay-title">SYSTEM COLLAPSE</h2>
+                        <p class="overlay-desc">Diagnostic readout from your last run:</p>
+
+                        <div class="gameover-stats">
+                            <div class="stat-box">
+                                <span class="stat-label">Final Score</span>
+                                <span id="modal-score" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">High Score</span>
+                                <span id="modal-highscore" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Orbs Absorbed</span>
+                                <span id="modal-apples" class="stat-value">0</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Final Length</span>
+                                <span id="modal-length" class="stat-value">0</span>
+                            </div>
+                        </div>
+
+                        <button id="restart-btn" class="cta-btn">
+                            <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            REBOOT RUN
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Action Bar -->
+                <div class="quick-action-bar">
+                    <button id="pause-toggle-btn" class="action-pill-btn">
+                        <svg viewBox="0 0 24 24"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                        Pause (Space)
+                    </button>
+                    <button id="quick-restart-btn" class="action-pill-btn">
+                        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                        Restart (R)
+                    </button>
+                </div>
+
+                <!-- Virtual Neon D-Pad (Touch & Mobile) -->
+                <div class="mobile-dpad-container" aria-label="Touch Directional Pad">
+                    <div class="dpad-row">
+                        <button id="dpad-up" class="dpad-btn" aria-label="Move Up">
+                            <svg viewBox="0 0 24 24"><polygon points="12 4 4 16 20 16"/></svg>
+                        </button>
+                    </div>
+                    <div class="dpad-row">
+                        <button id="dpad-left" class="dpad-btn" aria-label="Move Left">
+                            <svg viewBox="0 0 24 24"><polygon points="4 12 16 4 16 20"/></svg>
+                        </button>
+                        <button id="dpad-down" class="dpad-btn" aria-label="Move Down">
+                            <svg viewBox="0 0 24 24"><polygon points="12 20 4 8 20 8"/></svg>
+                        </button>
+                        <button id="dpad-right" class="dpad-btn" aria-label="Move Right">
+                            <svg viewBox="0 0 24 24"><polygon points="20 12 8 4 8 20"/></svg>
+                        </button>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Scripts -->
+            <!-- Sidebar: Power-Ups Legend & Controls -->
+            <aside class="sidebar-column">
+                <!-- Power-Ups & Items Legend -->
+                <div class="side-card">
+                    <h3 class="side-card-title">
+                        <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Quantum Power-Ups
+                    </h3>
+                    <div class="legend-list">
+                        <div class="legend-item">
+                            <div class="legend-icon apple">🟢</div>
+                            <div class="legend-info">
+                                <span class="legend-name">Energy Core</span>
+                                <span class="legend-effect">+10 Pts • Grows Snake +1</span>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-icon golden">⭐</div>
+                            <div class="legend-info">
+                                <span class="legend-name">Quantum Star</span>
+                                <span class="legend-effect">+50 Pts • Timed Rapid Orb</span>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-icon freeze">❄️</div>
+                            <div class="legend-info">
+                                <span class="legend-name">Cryo Freeze</span>
+                                <span class="legend-effect">Slows speed by 45% for 6s</span>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-icon multiplier">⚡</div>
+                            <div class="legend-info">
+                                <span class="legend-name">2X Surge Boost</span>
+                                <span class="legend-effect">Doubles all points for 8s</span>
+                            </div>
+                        </div>
+
+                        <div class="legend-item">
+                            <div class="legend-icon shrink">✂️</div>
+                            <div class="legend-info">
+                                <span class="legend-name">Phase Slicer</span>
+                                <span class="legend-effect">Slices off 3 tail segments</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keyboard Keybinds Card -->
+                <div class="side-card">
+                    <h3 class="side-card-title">
+                        <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6.01" y2="8"/><line x1="10" y1="8" x2="10.01" y2="8"/><line x1="14" y1="8" x2="14.01" y2="8"/><line x1="18" y1="8" x2="18.01" y2="8"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="10" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/></svg>
+                        Controls Matrix
+                    </h3>
+                    <div class="keys-grid">
+                        <div class="key-item">
+                            <span class="kbd-badge">↑ / W</span>
+                            <span>Move Up</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">↓ / S</span>
+                            <span>Move Down</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">← / A</span>
+                            <span>Move Left</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">→ / D</span>
+                            <span>Move Right</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">Space</span>
+                            <span>Pause / Play</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">R</span>
+                            <span>Quick Reboot</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">M</span>
+                            <span>Mute Audio</span>
+                        </div>
+                        <div class="key-item">
+                            <span class="kbd-badge">Swipe</span>
+                            <span>Mobile Swipe</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden Apples Count for accessibility -->
+                <div style="display: none;">
+                    <span id="hud-apples">0</span>
+                </div>
+            </aside>
+        </div>
+
+        <footer class="app-footer">
+            <p>Built with Vanilla HTML5 Canvas, CSS3 & Web Audio API • Open Source on <a href="https://github.com/CMukesh98/snake-game" target="_blank" rel="noopener">GitHub</a></p>
+        </footer>
+    </main>
+
+    <!-- Scripts in proper dependency order -->
     <script src="audio.js"></script>
     <script src="confetti.js"></script>
     <script src="game.js"></script>
-    <script src="app.js"></script>
 </body>
 </html>

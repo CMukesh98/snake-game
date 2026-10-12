@@ -1,15 +1,28 @@
-// High-performance Canvas Confetti engine
-class ConfettiEngine {
+/**
+ * Cyber Snake 2077 - High-Performance Canvas Confetti System
+ */
+class ConfettiCannon {
     constructor() {
         this.canvas = null;
         this.ctx = null;
         this.particles = [];
         this.animationId = null;
-        this.isActive = false;
+        this.init();
     }
 
-    init(canvasElement) {
-        this.canvas = canvasElement;
+    init() {
+        this.canvas = document.createElement('canvas');
+        this.canvas.id = 'confetti-canvas';
+        this.canvas.style.position = 'fixed';
+        this.canvas.style.top = '0';
+        this.canvas.style.left = '0';
+        this.canvas.style.width = '100vw';
+        this.canvas.style.height = '100vh';
+        this.canvas.style.pointerEvents = 'none';
+        this.canvas.style.zIndex = '9999';
+        this.canvas.style.display = 'none';
+        document.body.appendChild(this.canvas);
+
         this.ctx = this.canvas.getContext('2d');
         this.resize();
         window.addEventListener('resize', () => this.resize());
@@ -21,116 +34,90 @@ class ConfettiEngine {
         this.canvas.height = window.innerHeight;
     }
 
-    trigger(primaryColor = '#00f2fe', secondaryColor = '#ff007f') {
+    fire(durationMs = 3000) {
+        if (!this.canvas) return;
         this.resize();
-        this.particles = [];
-        this.isActive = true;
+        this.canvas.style.display = 'block';
 
         const colors = [
-            primaryColor,
-            secondaryColor,
-            '#ffd700',
-            '#a855f7',
-            '#38ef7d',
-            '#ffffff'
+            '#00f0ff', '#ff007f', '#ffe600', '#00ff66', '#a855f7', '#ffffff'
         ];
 
         const particleCount = 120;
+        this.particles = [];
+
         for (let i = 0; i < particleCount; i++) {
-            // Spawn from center and spread outwards
-            const angle = Math.random() * Math.PI * 2;
-            const speed = 4 + Math.random() * 9;
+            const angle = (Math.PI / 2) + (Math.random() - 0.5) * 1.6;
+            const speed = 7 + Math.random() * 12;
             this.particles.push({
-                x: this.canvas.width * (0.35 + Math.random() * 0.3),
-                y: this.canvas.height * (0.35 + Math.random() * 0.3),
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed - 4,
-                size: 6 + Math.random() * 8,
+                x: window.innerWidth * (0.2 + Math.random() * 0.6),
+                y: window.innerHeight * 0.7,
+                vx: Math.cos(angle) * speed * (Math.random() > 0.5 ? 1 : -1),
+                vy: -Math.abs(Math.sin(angle)) * speed - 4,
+                w: 6 + Math.random() * 8,
+                h: 8 + Math.random() * 10,
                 color: colors[Math.floor(Math.random() * colors.length)],
                 rotation: Math.random() * 360,
                 rotationSpeed: (Math.random() - 0.5) * 12,
-                wobble: Math.random() * Math.PI,
-                wobbleSpeed: 0.05 + Math.random() * 0.08,
-                alpha: 1,
-                decay: 0.006 + Math.random() * 0.009,
-                shape: Math.random() > 0.4 ? 'rect' : 'circle'
+                opacity: 1,
+                decay: 0.006 + Math.random() * 0.008,
+                gravity: 0.35 + Math.random() * 0.2
             });
         }
 
-        if (!this.animationId) {
-            this.loop();
-        }
-    }
+        if (this.animationId) cancelAnimationFrame(this.animationId);
+        const startTime = Date.now();
 
-    loop() {
-        if (!this.isActive || !this.ctx) {
-            this.animationId = null;
-            return;
-        }
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            let activeCount = 0;
+            for (let p of this.particles) {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += p.gravity;
+                p.vx *= 0.98;
+                p.rotation += p.rotationSpeed;
+                p.opacity -= p.decay;
 
-        let activeCount = 0;
-        const gravity = 0.22;
-        const drag = 0.985;
-
-        for (let i = 0; i < this.particles.length; i++) {
-            const p = this.particles[i];
-            if (p.alpha <= 0.01) continue;
-            activeCount++;
-
-            p.vx *= drag;
-            p.vy *= drag;
-            p.vy += gravity;
-
-            p.x += p.vx;
-            p.y += p.vy;
-            p.rotation += p.rotationSpeed;
-            p.wobble += p.wobbleSpeed;
-            p.alpha -= p.decay;
-
-            this.ctx.save();
-            this.ctx.globalAlpha = Math.max(0, p.alpha);
-            this.ctx.translate(p.x, p.y);
-            this.ctx.rotate((p.rotation * Math.PI) / 180);
-
-            const scaleX = Math.cos(p.wobble);
-            this.ctx.scale(scaleX, 1);
-
-            this.ctx.fillStyle = p.color;
-            this.ctx.shadowColor = p.color;
-            this.ctx.shadowBlur = 6;
-
-            if (p.shape === 'circle') {
-                this.ctx.beginPath();
-                this.ctx.arc(0, 0, p.size / 2, 0, Math.PI * 2);
-                this.ctx.fill();
-            } else {
-                this.ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+                if (p.opacity > 0 && p.y < this.canvas.height + 50) {
+                    activeCount++;
+                    this.ctx.save();
+                    this.ctx.translate(p.x, p.y);
+                    this.ctx.rotate((p.rotation * Math.PI) / 180);
+                    this.ctx.globalAlpha = Math.max(0, p.opacity);
+                    this.ctx.fillStyle = p.color;
+                    this.ctx.shadowBlur = 8;
+                    this.ctx.shadowColor = p.color;
+                    this.ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+                    this.ctx.restore();
+                }
             }
 
-            this.ctx.restore();
-        }
+            if (activeCount > 0 && elapsed < durationMs) {
+                this.animationId = requestAnimationFrame(animate);
+            } else {
+                this.stop();
+            }
+        };
 
-        if (activeCount > 0) {
-            this.animationId = requestAnimationFrame(() => this.loop());
-        } else {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-            this.isActive = false;
-            this.animationId = null;
-        }
+        this.animationId = requestAnimationFrame(animate);
     }
 
     stop() {
-        this.isActive = false;
-        if (this.ctx && this.canvas) {
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        }
         if (this.animationId) {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
+        if (this.canvas) {
+            this.canvas.style.display = 'none';
+            if (this.ctx) {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+        }
+        this.particles = [];
     }
 }
 
-window.confettiEngine = new ConfettiEngine();
+window.confetti = new ConfettiCannon();
